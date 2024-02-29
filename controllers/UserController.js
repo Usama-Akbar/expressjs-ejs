@@ -7,7 +7,8 @@ const userValidation = require("../utils/helpers/UserValidation/userValidation")
 
 const validatePassword = (password) => {
   // Password validation (one uppercase, one lowercase, one special character, one number, minimum 8 length)
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
   return passwordRegex.test(password);
 };
 
@@ -65,7 +66,8 @@ module.exports = {
       // Password validation
       if (!validatePassword(userData.password)) {
         return res.status(400).json({
-          message: "Password must contain at least one uppercase letter, one lowercase letter, one special character, one number, and be a minimum of 8 characters long",
+          message:
+            "Password must contain at least one uppercase letter, one lowercase letter, one special character, one number, and be a minimum of 8 characters long",
           result: false,
         });
       }
@@ -78,64 +80,68 @@ module.exports = {
 
         // Check if the email is already registered
         const checkEmailQuery = "SELECT * FROM users WHERE email = ?";
-        connection.query(checkEmailQuery, [userData.email], (emailErr, emailResults) => {
-          if (emailErr) {
-            connection.release();
-            console.error("Error checking email existence:", emailErr);
-            return res.status(500).json({
-              message: "Error checking email existence",
-              result: false,
-            });
-          }
-
-          if (emailResults.length > 0) {
-            connection.release();
-            return res.status(400).json({
-              message: "Email already registered",
-              result: false,
-            });
-          }
-
-          // Hash the password
-          bcrypt.hash(userData.password, 10, (hashErr, hashedPassword) => {
-            if (hashErr) {
+        connection.query(
+          checkEmailQuery,
+          [userData.email],
+          (emailErr, emailResults) => {
+            if (emailErr) {
               connection.release();
-              console.error("Error hashing password: ", hashErr);
-              return res.status(500).send("Error hashing password");
+              console.error("Error checking email existence:", emailErr);
+              return res.status(500).json({
+                message: "Error checking email existence",
+                result: false,
+              });
             }
 
-            // SQL query to insert user data into the 'users' table
-            const insertQuery =
-              "INSERT INTO users (firstname, lastname, email, password) VALUES (?, ?, ?, ?)";
+            if (emailResults.length > 0) {
+              connection.release();
+              return res.status(400).json({
+                message: "Email already registered",
+                result: false,
+              });
+            }
 
-            // Execute the query
-            connection.query(
-              insertQuery,
-              [
-                userData.firstname,
-                userData.lastname,
-                userData.email,
-                hashedPassword,
-              ],
-              (insertErr, results) => {
-                connection.release(); // Release the connection back to the pool
+            // Hash the password
+            bcrypt.hash(userData.password, 10, (hashErr, hashedPassword) => {
+              if (hashErr) {
+                connection.release();
+                console.error("Error hashing password: ", hashErr);
+                return res.status(500).send("Error hashing password");
+              }
 
-                if (insertErr) {
-                  console.error("Error registering user:", insertErr);
-                  return res.status(500).json({
-                    message: "Error registering user",
-                    result: false,
+              // SQL query to insert user data into the 'users' table
+              const insertQuery =
+                "INSERT INTO users (firstname, lastname, email, password) VALUES (?, ?, ?, ?)";
+
+              // Execute the query
+              connection.query(
+                insertQuery,
+                [
+                  userData.firstname,
+                  userData.lastname,
+                  userData.email,
+                  hashedPassword,
+                ],
+                (insertErr, results) => {
+                  connection.release(); // Release the connection back to the pool
+
+                  if (insertErr) {
+                    console.error("Error registering user:", insertErr);
+                    return res.status(500).json({
+                      message: "Error registering user",
+                      result: false,
+                    });
+                  }
+
+                  res.status(200).json({
+                    message: "User registered successfully",
+                    result: true,
                   });
                 }
-
-                res.status(200).json({
-                  message: "User registered successfully",
-                  result: true,
-                });
-              }
-            );
-          });
-        });
+              );
+            });
+          }
+        );
       });
     } catch (e) {
       console.log("ERROR is", e);
@@ -155,7 +161,7 @@ module.exports = {
           message: "Email is required",
           result: false,
         });
-      }else if (!password) {
+      } else if (!password) {
         return res.status(400).json({
           message: "Password is required",
           result: false,
@@ -293,22 +299,9 @@ module.exports = {
           res.status(500).send("Error connecting to the database");
           return;
         }
-        const token = req.header("x-access-token");
-        if (!token) {
-          return res
-            .status(401)
-            .json({ message: "Unauthorized - Missing token" });
-        }
-        const isValid = validateAccessToken(token);
-
-        if (!isValid) {
-          return res
-            .status(401)
-            .json({ message: "Unauthorized - Invalid", result: false });
-        }
 
         // SQL query to retrieve all user data from the 'users' table
-        const getQuery = "SELECT * FROM users";
+        const getQuery = "SELECT * FROM login_activities";
 
         // Execute the query
         connection.query(getQuery, (err, results) => {
@@ -322,7 +315,7 @@ module.exports = {
             });
             return;
           }
-          res.status(200).json({
+          res.status(200).render("list", {
             users: results,
             result: true,
           });
@@ -356,32 +349,35 @@ module.exports = {
         const deleteTokenQuery = "DELETE FROM auth_tokens WHERE token = ?";
 
         // Execute the queries
-        connection.query(deleteTokenQuery, [token], (deleteErr, deleteResults) => {
-          if (deleteErr) {
-            console.error("Error deleting token:", deleteErr);
-            res.status(500).send("Error deleting token");
-            return;
-          }
+        connection.query(
+          deleteTokenQuery,
+          [token],
+          (deleteErr, deleteResults) => {
+            if (deleteErr) {
+              console.error("Error deleting token:", deleteErr);
+              res.status(500).send("Error deleting token");
+              return;
+            }
 
-          // Check if any rows were affected (indicating a successful deletion)
-          if (deleteResults.affectedRows > 0) {
-            res.status(200).json({
-              message: "User signed out successfully",
-              result: true,
-            });
-          } else {
-            res.status(401).json({
-              message: "Unauthorized - Invalid token",
-              result: false,
-            });
+            // Check if any rows were affected (indicating a successful deletion)
+            if (deleteResults.affectedRows > 0) {
+              res.status(200).json({
+                message: "User signed out successfully",
+                result: true,
+              });
+            } else {
+              res.status(401).json({
+                message: "Unauthorized - Invalid token",
+                result: false,
+              });
+            }
           }
-        });
+        );
       });
     } catch (e) {
       console.log("ERROR is", e);
       res.status(500).json({
-        message:
-          "There was a problem signing out the user, please try again.",
+        message: "There was a problem signing out the user, please try again.",
         result: false,
       });
     }
