@@ -299,22 +299,26 @@ module.exports = {
           res.status(500).send("Error connecting to the database");
           return;
         }
-
-        // SQL query to retrieve all user data from the 'users' table
-        const getQuery = "SELECT * FROM login_activities";
-
+  
+        // SQL query to retrieve user data from 'login_activities' and 'users' tables
+        const getQuery = `
+          SELECT la.*, u.firstname, u.lastname, u.email
+          FROM login_activities la
+          INNER JOIN users u ON la.userID = u.user_id
+        `;
+  
         // Execute the query
         connection.query(getQuery, (err, results) => {
           connection.release(); // Release the connection back to the pool
           if (err) {
             console.error("Error retrieving user data:", err);
             res.status(500).json({
-              message:
-                "There was a problem in retrieving the users list, please try again.",
+              message: "There was a problem in retrieving the users list, please try again.",
               result: false,
             });
             return;
           }
+          // IP ADDRESS WILL BE ::1 in development environment and will be changed when server is pushed to production
           res.status(200).render("list", {
             users: results,
             result: true,
@@ -324,12 +328,11 @@ module.exports = {
     } catch (e) {
       console.log("ERROR is", e);
       res.status(500).json({
-        message:
-          "There was a problem in registering the users list, please try again.",
+        message: "There was a problem in registering the users list, please try again.",
         result: false,
       });
     }
-  },
+  },  
   signOut: async function (req, res, next) {
     try {
       getConnection((err, connection) => {
