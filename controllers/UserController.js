@@ -257,7 +257,7 @@ module.exports = {
                       }
                       // Record successful login activity
                       recordLoginActivity(results[0].user_id, true, req.ip);
-                      res.status(200).json({ user: results[0], token });
+                      res.status(200).json({ message: "Logged in Successfully", token });
                     }
                   );
                 } else {
@@ -273,7 +273,7 @@ module.exports = {
                       }
                       // Record successful login activity
                       recordLoginActivity(results[0].user_id, true, req.ip);
-                      res.status(200).json({ user: results[0], token });
+                      res.status(200).json({ message: "Logged in Successfully", token });
                     }
                   );
                 }
