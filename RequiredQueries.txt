@@ -1,0 +1,34 @@
+// Users Table 
+
+CREATE TABLE Users(
+	user_id INT(11) PRIMARY KEY AUTO_INCREMENT,
+	firstname VARCHAR(255),
+	lastname VARCHAR(255),
+	email VARCHAR(255),
+	password VARCHAR(255),
+	registered_at TIMESTAMP
+);
+
+// AUTH TOKENS Table
+
+CREATE auth_tokens (
+	token_id INT(11) PRIMARY KEY AUTO_INCREMENT,
+	user_id INT(11),
+	token VARCHAR(500),
+	expiration_timestamp TIMESTAMP,
+	FOREIGN KEY (user_id) REFERENCES users(user_id)
+		ON DELETE CASCADE
+		ON UPDATE CASCADE
+);
+
+// Login Activities Table
+
+CREATE TABLE login_activities (
+    activityID INT AUTO_INCREMENT PRIMARY KEY,
+    userID INT,
+    loginTimestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ipAddress VARCHAR(15),
+    loginSuccess BOOLEAN,
+    FOREIGN KEY (userID) REFERENCES users(user_id)
+);
+

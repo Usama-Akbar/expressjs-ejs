@@ -1,0 +1,94 @@
+{
+	"info": {
+		"_postman_id": "bc6a945f-09ba-41da-b641-d1401420427e",
+		"name": "Test Task",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29408023"
+	},
+	"item": [
+		{
+			"name": "Sign IN",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"luciferbutt911@gmail.com\",\r\n    \"password\" : \"@2Sa0817\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/users/sign-in",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"users",
+						"sign-in"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sign UP",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"firstname\" : \"Lucifer\",\r\n    \"lastname\" : \"Butt\",\r\n    \"email\": \"luciferbutt911@gmail.com\",\r\n    \"password\" : \"@2Sa0817\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/users/sign-up",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"users",
+						"sign-up"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Users",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo1LCJmaXJzdG5hbWUiOiJMdWNpZmVyIiwibGFzdG5hbWUiOiJCdXR0IiwiZW1haWwiOiJsdWNpZmVyYnV0dDkxMUBnbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYiQxMCRRQzF3ZXltWWl6RUI2ZHk3TnJ6LjBPSDhLZUtnQ0RocDU0ay5Qb1pmOHhCaHVqUDlBYkhiYSIsInJlZ2lzdGVyZWRfYXQiOiIyMDI0LTAyLTI5VDExOjQ0OjQzLjAwMFoiLCJpYXQiOjE3MDkyMDcxNjcsImV4cCI6MTcwOTI5MzU2N30.Fze4eeZcIiMGNP_0q7b8xsmqlUjSRhPazwThch4-4yI",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3000/users/list",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"users",
+						"list"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
